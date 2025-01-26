@@ -1,0 +1,33 @@
+﻿
+@{
+    ViewData["Title"] = "خريطة التصحر";
+}
+
+
+<h2>@ViewData["Title"]</h2>
+<div class="container">
+    <h2 class="text-center mt-4 text-primary">🌍 خريطة التصحر</h2>
+    <div class="card shadow p-3">
+        <div id="map" style="height: 500px; border-radius: 10px;"></div>
+    </div>
+</div>
+
+<!-- مكتبة Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var map = L.map('map').setView([24.7136, 46.6753], 10);
+
+        // تحميل الخريطة من OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // إضافة علامة الموقع
+        L.marker([24.7136, 46.6753]).addTo(map)
+            .bindPopup('<b>موقع رصد التصحر</b><br>تحليل الأقمار الاصطناعية.')
+            .openPopup();
+    });
+</script>
