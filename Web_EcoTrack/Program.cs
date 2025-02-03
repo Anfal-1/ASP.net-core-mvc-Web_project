@@ -43,7 +43,7 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 {
     options.Level = System.IO.Compression.CompressionLevel.Optimal;
 });
-builder.WebHost.UseUrls("http://localhost:5000", "http://0.0.0.0:80");
+builder.WebHost.UseUrls("https://localhost:5000", "http://0.0.0.0:80");
 
 var app = builder.Build();
 
