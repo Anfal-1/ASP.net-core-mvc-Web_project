@@ -1,12 +1,15 @@
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+# «” Œœ«„ .NET 8.0 · ‘€Ì· «· ÿ»Ìﬁ
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+# «” Œœ«„ .NET 8.0 SDK ··»‰«¡
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY . .
 RUN dotnet publish -c Release -o /app/publish
 
+# ≈‰‘«¡ «·’Ê—… «·‰Â«∆Ì…
 FROM base AS final
 WORKDIR /app
 COPY --from=build /app/publish .
