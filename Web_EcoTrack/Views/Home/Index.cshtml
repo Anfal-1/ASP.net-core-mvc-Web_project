@@ -1,11 +1,74 @@
 ﻿@{
-    ViewData["Title"] = "الصفحة الرئيسية";
+    ViewData["Title"] = "إيكو تراك - رصد التصحر بالذكاء الاصطناعي";
 }
 
-
-
+<!-- ✅ تصميم الصفحة الرئيسية -->
 <div class="container text-center mt-5">
-    <h1 class="display-4 fw-bold text-primary">مرحبًا بك في <span class="text-success">EcoTrack</span></h1>
-    <p class="lead text-muted">رصد وتحليل التصحر باستخدام الذكاء الاصطناعي</p>
-    <a href="/Home/Map" class="btn btn-success btn-lg mt-3"><i class="fas fa-map"></i> استكشف الخريطة</a>
+    <!-- ✅ شعار المشروع -->
+    <div class="mb-4">
+        <img src="~/image/logo.png" alt="EcoTrack Logo" width="90" height="90" class="d-inline-block align-top me-2" />
+    </div>
+
+    <!-- ✅ عنوان جذاب -->
+    <h1 class="display-4 fw-bold text-primary">إيكو تراك 🌍</h1>
+    <p class="lead text-secondary">منصة ذكية لرصد التصحر وتحليل البيئة باستخدام الذكاء الاصطناعي.</p>
+
+    <!-- ✅ صورة رئيسية -->
+    <div class="mb-4">
+        <img src="https://via.placeholder.com/600x300" alt="AI Desertification Detection" class="img-fluid rounded shadow">
+    </div>
+
+    <!-- ✅ قسم المميزات -->
+    <div class="row mt-5">
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3">
+                <img src="https://via.placeholder.com/100" class="card-img-top mx-auto d-block" alt="AI Icon">
+                <div class="card-body">
+                    <h5 class="card-title">الذكاء الاصطناعي</h5>
+                    <p class="card-text">نستخدم YOLOv8 وBLIP لتحليل الصور وتحديد التصحر بدقة عالية.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3">
+                <img src="https://via.placeholder.com/100" class="card-img-top mx-auto d-block" alt="Satellite Icon">
+                <div class="card-body">
+                    <h5 class="card-title">البيانات الجغرافية</h5>
+                    <p class="card-text">تحليل البيانات الجغرافية باستخدام GeoPandas وFolium لرسم الخرائط.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3">
+                <img src="https://via.placeholder.com/100" class="card-img-top mx-auto d-block" alt="Sustainability Icon">
+                <div class="card-body">
+                    <h5 class="card-title">الاستدامة</h5>
+                    <p class="card-text">دعم الجهود العالمية لمكافحة التصحر وتحقيق أهداف التنمية المستدامة.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ زر التنقل إلى صفحة التحليل -->
+    <div class="mt-5">
+        <a href="@Url.Action("Dashboard", "Home")" class="btn btn-lg btn-primary shadow-lg">ابدأ التحليل 🔍</a>
+    </div>
+
+    <!-- ✅ قسم الفريق -->
+    <div class="mt-5">
+        <h3 class="text-secondary">📢 عن الفريق</h3>
+        <p class="text-muted">نحن فريق متخصص في الذكاء الاصطناعي وتحليل البيانات الجغرافية، ونعمل على إيجاد حلول مستدامة لمكافحة التصحر.</p>
+    </div>
 </div>
+
+<!-- ✅ تحسينات التصميم -->
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .card-img-top {
+        width: 80px;
+        height: 80px;
+    }
+</style>

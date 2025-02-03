@@ -1,0 +1,40 @@
+﻿@model Web_EcoTrack.Models.UserModel
+
+@{
+    ViewData["Title"] = "الملف الشخصي";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center">الملف الشخصي</h2>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+
+    <div class="card shadow-sm p-4">
+        <form asp-action="UpdateProfile" method="post">
+            <div class="mb-3">
+                <label class="form-label">اسم المستخدم</label>
+                <input type="text" class="form-control" value="@Model.Username" readonly>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">البريد الإلكتروني</label>
+                <input type="email" class="form-control" value="@Model.Email" readonly>
+            </div>
+
+            <div class="mb-3">
+                <label for="newPassword" class="form-label">كلمة المرور الجديدة</label>
+                <input type="password" class="form-control" id="newPassword" name="newPassword" placeholder="أدخل كلمة المرور الجديدة">
+            </div>
+
+            <button type="submit" class="btn btn-success">تحديث كلمة المرور</button>
+        </form>
+    </div>
+</div>

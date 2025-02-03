@@ -1,10 +1,25 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "خريطة التصحر";
 }
 
 
-<h2>@ViewData["Title"]</h2>
+
+
+<!-- مربع البحث مع دعم الأوامر الصوتية -->
+<div class="text-center mt-3">
+    <input type="text" id="searchBox" placeholder="ابحث عن منطقة أو أدخل الإحداثيات"
+           style="width: 60%; height: 40px; font-size: 18px; padding: 10px; border-radius: 5px;">
+    <button onclick="searchDesertification()">🔍 بحث</button>
+    <button onclick="startVoiceSearch()">🎤 بحث بالصوت</button>
+</div>
+
+<!-- زر تغيير نوع الخريطة -->
+<div class="text-center mt-2">
+    <button onclick="changeMapLayer('satellite')">🌍 عرض الأقمار الصناعية</button>
+    <button onclick="changeMapLayer('street')">🗺️ عرض الشوارع</button>
+    <button onclick="toggleHeatmap()">🔥 تفعيل الخريطة الحرارية</button>
+</div>
+
 <div class="container">
     <h2 class="text-center mt-4 text-primary">🌍 خريطة التصحر</h2>
     <div class="card shadow p-3">
@@ -12,22 +27,98 @@
     </div>
 </div>
 
-<!-- مكتبة Leaflet -->
+<!-- تضمين مكتبة Leaflet.js وHeatmap -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
 
 <script>
+    let map, heatmapLayer;
+    let currentLayer;
+
     document.addEventListener("DOMContentLoaded", function () {
-        var map = L.map('map').setView([24.7136, 46.6753], 10);
+        map = L.map('map').setView([24.7136, 46.6753], 6);
+        currentLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-        // تحميل الخريطة من OpenStreetMap
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-
-        // إضافة علامة الموقع
-        L.marker([24.7136, 46.6753]).addTo(map)
-            .bindPopup('<b>موقع رصد التصحر</b><br>تحليل الأقمار الاصطناعية.')
-            .openPopup();
+        fetchNASAData(); // تحميل بيانات NASA
     });
+
+    function fetchNASAData() {
+        // استخدام API حقيقية من NASA لمعلومات التصحر (يجب استبدال API_KEY بالمفتاح الخاص بك)
+        fetch(`https://api.nasa.gov/planetary/earth/assets?lon=46.6753&lat=24.7136&dim=0.1&api_key=DEMO_KEY`)
+            .then(response => response.json())
+            .then(data => {
+                console.log("بيانات NASA:", data);
+            })
+            .catch(error => console.error("خطأ في جلب بيانات NASA:", error));
+    }
+
+    function toggleHeatmap() {
+        if (heatmapLayer) {
+            map.removeLayer(heatmapLayer);
+            heatmapLayer = null;
+        } else {
+            let heatData = [
+                [24.7136, 46.6753, 0.9],  // الرياض - تصحر شديد
+                [21.3891, 39.8579, 0.6],  // مكة - تصحر متوسط
+                [24.5247, 39.5692, 0.3],  // المدينة - تصحر منخفض
+                [27.5219, 41.6907, 1.0],  // حائل - تصحر شديد جدًا
+                [17.565, 44.2289, 0.5]    // نجران - تصحر معتدل
+            ];
+            heatmapLayer = L.heatLayer(heatData, { radius: 25 }).addTo(map);
+        }
+    }
+
+    function changeMapLayer(type) {
+        map.removeLayer(currentLayer);
+        if (type === "satellite") {
+            currentLayer = L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+                subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                attribution: '© Google Earth'
+            }).addTo(map);
+        } else {
+            currentLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        }
+    }
+
+    function searchDesertification() {
+        let query = document.getElementById("searchBox").value.trim();
+        let locations = {
+            "الرياض": [24.7136, 46.6753],
+            "مكة": [21.3891, 39.8579],
+            "المدينة المنورة": [24.5247, 39.5692],
+            "حائل": [27.5219, 41.6907],
+            "نجران": [17.565, 44.2289]
+        };
+
+        if (locations[query]) {
+            map.setView(locations[query], 8);
+            L.marker(locations[query]).addTo(map)
+                .bindPopup(`<b>${query}</b><br>نسبة التصحر مرتفعة في هذه المنطقة.`)
+                .openPopup();
+        } else {
+            alert("لم يتم العثور على نتائج.");
+        }
+    }
+
+    function startVoiceSearch() {
+        if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
+            alert("متصفحك لا يدعم البحث الصوتي.");
+            return;
+        }
+
+        let recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = "ar-SA";
+        recognition.start();
+
+        recognition.onresult = function(event) {
+            let voiceQuery = event.results[0][0].transcript;
+            document.getElementById("searchBox").value = voiceQuery;
+            searchDesertification();
+        };
+
+        recognition.onerror = function(event) {
+            console.error("حدث خطأ أثناء البحث الصوتي:", event.error);
+        };
+    }
 </script>

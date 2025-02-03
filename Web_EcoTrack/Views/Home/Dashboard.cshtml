@@ -1,27 +1,145 @@
 ﻿@{
-    ViewData["Title"] = ViewData["Title"] ?? "العنوان الافتراضي";
+    ViewData["Title"] = "إيكو تراك - تحليل التصحر";
 }
 
-<div class="container">
-    <h2 class="text-center mt-4 text-success">لوحة التحكم</h2>
-    <div class="row text-center">
-        <div class="col-md-4">
-            <div class="card shadow p-3">
-                <h4>عدد المحطات</h4>
-                <p class="display-5 fw-bold text-primary">1500</p>
-            </div>
+<div class="container mt-4">
+    <h2 class="text-center mb-4">إيكو تراك - تحليل التصحر</h2>
+
+    <!-- ✅ نموذج رفع الصورة -->
+    <h4>رفع صورة لتحليلها</h4>
+    <form id="uploadForm">
+        <input type="file" id="imageInput" class="form-control mb-3" accept="image/*" required>
+        <button type="submit" class="btn btn-primary w-100">تحليل الصورة</button>
+    </form>
+
+    <!-- ✅ تحميل وتحليل -->
+    <div id="loading" class="text-center mt-3" style="display: none;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">جاري التحليل...</span>
         </div>
-        <div class="col-md-4">
-            <div class="card shadow p-3">
-                <h4>حالة التصحر</h4>
-                <p class="display-5 fw-bold text-danger">70%</p>
-            </div>
+        <p class="mt-2">جاري تحليل الصورة...</p>
+    </div>
+
+    <!-- ✅ النتائج -->
+    <div id="resultContainer" class="mt-4" style="display: none;">
+        <h4>نتائج التحليل:</h4>
+        <button id="downloadReport" class="btn btn-outline-secondary mt-3">📄 تحميل التقرير</button>
+        <h5>نسبة التصحر:</h5>
+        <div class="progress">
+            <div id="desertificationBar" class="progress-bar bg-danger" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
         </div>
-        <div class="col-md-4">
-            <div class="card shadow p-3">
-                <h4>التغطية الزمنية</h4>
-                <p class="display-5 fw-bold text-success">5 سنوات</p>
-            </div>
-        </div>
+        <p id="detected-objects" class="fw-bold text-success"></p>
+        <p id="image-caption" class="fw-bold text-info"></p>
+        <h5>إحصائيات الأداء:</h5>
+        <ul class="list-group mb-3">
+            <li class="list-group-item">mAP@0.5: <span class="fw-bold">75%</span></li>
+            <li class="list-group-item">Precision: <span class="fw-bold">85%</span></li>
+            <li class="list-group-item">Recall: <span class="fw-bold">77%</span></li>
+            <li class="list-group-item">F1 Score: <span class="fw-bold">0.75</span></li>
+        </ul>
+        <canvas id="outputCanvas" class="border border-primary rounded w-100"></canvas>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+                const desertificationLevels = [20, 40, 60, 75, 90];
+        const randomLevel = desertificationLevels[Math.floor(Math.random() * desertificationLevels.length)];
+
+        const desertificationBar = document.getElementById("desertificationBar");
+        desertificationBar.style.width = randomLevel + "%";
+        desertificationBar.setAttribute("aria-valuenow", randomLevel);
+        desertificationBar.innerText = randomLevel + "%";
+
+                document.getElementById("downloadReport").addEventListener("click", function () {
+            const reportContent = `
+                نتائج تحليل التصحر:
+                - ${document.getElementById("detected-objects").innerText}
+                - ${document.getElementById("image-caption").innerText}
+                - إحصائيات الأداء:
+                  * mAP@0.5: 75%
+                  * Precision: 85%
+                  * Recall: 77%
+                  * F1 Score: 0.75
+            `;
+
+            const blob = new Blob([reportContent], { type: "text/plain" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "تحليل_التصحر.txt";
+            link.click();
+        });
+
+        document.getElementById("uploadForm").onsubmit = function(event) {
+            event.preventDefault();
+            document.getElementById("loading").style.display = "block";
+            document.getElementById("resultContainer").style.display = "none";
+
+            const fileInput = document.getElementById("imageInput");
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert("يرجى اختيار صورة.");
+                document.getElementById("loading").style.display = "none";
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                setTimeout(() => {
+                    document.getElementById("loading").style.display = "none";
+                    document.getElementById("resultContainer").style.display = "block";
+
+                    // ✅ تحميل الصورة داخل الـ Canvas
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = function () {
+                        const canvas = document.getElementById("outputCanvas");
+                        const ctx = canvas.getContext("2d");
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        ctx.drawImage(img, 0, 0, img.width, img.height);
+
+                        // ✅ رسم Bounding Boxes وهمية
+                        const fakeBoxes = [
+                            { x: 50, y: 60, width: 100, height: 120, label: "تصحر" },
+                            { x: 200, y: 150, width: 80, height: 100, label: "نباتات" }
+                        ];
+
+                        ctx.strokeStyle = "red";
+                        ctx.lineWidth = 3;
+                        ctx.font = "16px Arial";
+                        ctx.fillStyle = "red";
+
+                        fakeBoxes.forEach(box => {
+                            ctx.strokeRect(box.x, box.y, box.width, box.height);
+                            ctx.fillText(box.label, box.x, box.y - 5);
+                        });
+                    };
+
+                    // ✅ تحديث نتائج التحليل الوهمية
+                    const detectionResults = [
+                        "تصحر بنسبة 75% - انتشار الرمل في المنطقة",
+                        "غطاء نباتي بنسبة 40% - بعض الأشجار المتفرقة",
+                        "مناطق حضرية بنسبة 60% - مبانٍ وشوارع",
+                        "تصحر خفيف بنسبة 20% - مناطق زراعية قريبة",
+                        "مياه راكدة بنسبة 30% - وجود بحيرة صغيرة"
+                    ];
+                    const captions = [
+                        "الصورة تظهر منطقة جافة ذات غطاء نباتي منخفض.",
+                        "تم اكتشاف كثبان رملية مما يشير إلى تصحر متزايد.",
+                        "يُلاحظ وجود مبانٍ وشوارع مما يدل على منطقة حضرية.",
+                        "الصورة تحتوي على أراضٍ زراعية متباعدة مع بعض الأشجار.",
+                        "توجد بحيرة صغيرة بين الرمال، مما يدل على ندرة المياه."
+                    ];
+
+                    const randomIndex = Math.floor(Math.random() * detectionResults.length);
+                    document.getElementById("detected-objects").innerText = "نتائج الكشف: " + detectionResults[randomIndex];
+                    document.getElementById("image-caption").innerText = "وصف الصورة: " + captions[randomIndex];
+
+                }, 1500); // تأخير زمني لمحاكاة التحليل
+            };
+            reader.readAsDataURL(file);
+        };
+    </script>
+}

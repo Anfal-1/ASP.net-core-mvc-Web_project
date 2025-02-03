@@ -3,58 +3,88 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="EcoTrack - شريكك الدائم في رصد ومراقبة التصحر باستخدام الذكاء الاصطناعي." />
     <title>@(ViewData["Title"] ?? "EcoTrack")</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!-- ملفات CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Web_EcoTrack.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- مكتبة Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- ملفات JavaScript -->
+    <script src="~/lib/jquery/jquery.min.js" defer></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script src="~/js/site.js" defer></script>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
-            <div class="ms-3">
-                <select id="language-selector" class="form-select bg-light border-0 w-auto">
-                    <option value="ar" selected>العربية</option>
-                    <option value="en">English</option>
-                </select>
-            </div>
+        <!-- شريط التنقل -->
+        <nav class="navbar navbar-light bg-white border-bottom shadow-sm fixed-top navbar-expand-lg">
             <div class="container-fluid">
-                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
-                    Web_EcoTrack
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+                <!-- زر القائمة الجانبية (Sidebar Toggle Button) -->
+                <button class="btn btn-outline-dark me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu">
+                    <i class="fas fa-bars fa-lg"></i>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">الرئيسية</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Privacy">الخصوصية</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Dashboard">لوحة التحكم</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Map">الخريطة</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Login">تسجيل الدخول</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Register">إنشاء حساب</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Logout">تسجيل الخروج</a>
-                        </li>
-                    </ul>
 
-                </div>
+                <!-- اللوجو والعنوان (محاذاة لليمين) -->
+                <a class="navbar-brand fw-bold fs-4 d-flex align-items-center ms-auto" asp-controller="Home" asp-action="Index">
+                    <img src="~/image/logo.png" alt="EcoTrack Logo" width="90" height="90" class="d-inline-block align-top me-2" />
+                    EcoTrack
+                </a>
             </div>
         </nav>
+
+        <!-- يمنع تداخل المحتوى مع شريط التنقل -->
+        <div style="margin-top: 80px;">
+            @RenderBody()
+        </div>
+
+        <!-- القائمة الجانبية (Offcanvas Sidebar) -->
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarMenu" style="width: 250px;">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title fw-bold">Web_EcoTrack</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="إغلاق"></button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark fw-bold @(ViewData["ActivePage"] == "Index" ? "active" : "")" asp-controller="Home" asp-action="Index">
+                            <i class="fas fa-home me-2"></i>الرئيسية
+                        </a>
+                    </li>
+                    
+                    
+                    <li class="nav-item">
+                        <a class="nav-link text-dark @(ViewData["ActivePage"] == "Dashboard" ? "active" : "")" asp-controller="Home" asp-action="Dashboard">
+                            <i class="fas fa-tachometer-alt me-2"></i>لوحة التحكم
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark @(ViewData["ActivePage"] == "Map" ? "active" : "")" asp-controller="Home" asp-action="Map">
+                            <i class="fas fa-map-marker-alt me-2"></i>الخريطة
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link text-dark @(ViewData["ActivePage"] == "About" ? "active" : "")" asp-controller="Home" asp-action="about">
+                            <i class="fas fa-info-circle me-2"></i>من نحن
+                        </a>
+
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark @(ViewData["ActivePage"] == "Blog" ? "active" : "")" asp-controller="Home" asp-action="Blog">
+                            <i class="fas fa-newspaper me-2"></i> المدونة
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </header>
+        
+    
 
     <div class="container">
         <main role="main" class="pb-3">
@@ -73,13 +103,108 @@
             document.getElementById("loading").style.display = "none";
         });
     </script>
-    <footer class="bg-dark text-center text-white py-3 mt-4">
-        <p>&copy; 2025 - EcoTrack | <a href="/Home/Privacy" class="text-white">سياسة الخصوصية</a></p>
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <!-- الأدوات المساعدة -->
+                <div class="col-md-4 mb-3 text-center">
+                    <h5 class="fw-bold">الأدوات المساعدة</h5>
+                    <div class="d-flex justify-content-center">
+                        <button class="btn btn-outline-light me-2" id="decreaseText">A-</button>
+                        <button class="btn btn-outline-light me-2" id="increaseText">A+</button>
+                        <button class="btn btn-outline-light" id="toggleContrast"><i class="fas fa-eye"></i></button>
+                    </div>
+                </div>
+
+                <!-- الخدمات -->
+                <div class="col-md-4 mb-3 text-center">
+                    <h5 class="fw-bold">الخدمات</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="@Url.Action("Index", "Home")" class="text-white text-decoration-none">الرئيسية</a></li>
+                        <li><a href="@Url.Action("About", "Home")" class="text-white text-decoration-none">من نحن</a></li>
+                        <li><a href="@Url.Action("Blog", "Home")" class="text-white text-decoration-none">المدونة</a></li>
+                        <li>
+                            <a href="https://wa.me/966551234567" target="_blank" class="text-white text-decoration-none">
+                                تواصل معنا <i class="fab fa-whatsapp"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- وسائل التواصل الاجتماعي -->
+                <div class="col-md-4 mb-3 text-center">
+                    <h5 class="fw-bold">التواصل الاجتماعي</h5>
+                    <p>يمكنك متابعتنا عبر منصات التواصل الاجتماعي</p>
+                    <div>
+                        <a href="#" class="text-white me-3"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-instagram fa-lg"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-facebook fa-lg"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- حقوق النشر -->
+            <div class="text-center mt-4">
+                <p>© 2025 جميع الحقوق محفوظة EcoTrack</p>
+            </div>
+        </div>
     </footer>
 
+    <!-- سكريبتات تحسين الوصول -->
+    <script>
+        // تكبير النص
+        document.getElementById("increaseText").addEventListener("click", function() {
+            document.body.style.fontSize = "larger";
+        });
+
+        // تصغير النص
+        document.getElementById("decreaseText").addEventListener("click", function() {
+            document.body.style.fontSize = "smaller";
+        });
+
+        // وضع التباين العالي
+        document.getElementById("toggleContrast").addEventListener("click", function() {
+            document.body.classList.toggle("high-contrast");
+        });
+    </script>
+
+    <!-- ستايل للوضع الليلي -->
+    <style>
+        .high-contrast {
+            background-color: black !important;
+            color: yellow !important;
+        }
+
+            .high-contrast a {
+                color: cyan !important;
+            }
+    </style>
+    <!-- تضمين أيقونات الفونت أويسوم -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+
+    <style>
+        footer {
+            background-color: #2C3E50;
+        }
+
+            footer a:hover {
+                color: #1ABC9C;
+            }
+
+        .social-icons a {
+            transition: all 0.3s ease-in-out;
+        }
+
+            .social-icons a:hover {
+                color: #1ABC9C;
+                transform: scale(1.1);
+            }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" defer asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
     <script>
         document.getElementById("language-selector").addEventListener("change", function () {

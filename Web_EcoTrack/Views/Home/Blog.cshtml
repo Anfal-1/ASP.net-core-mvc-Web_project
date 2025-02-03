@@ -1,0 +1,64 @@
+﻿@{
+    ViewData["Title"] = "المدونة";
+}
+
+<div class="container mt-5">
+    <!-- عنوان الصفحة -->
+    <header class="text-center mb-4">
+        <h1 class="fw-bold text-success">المدونة</h1>
+        <p class="lead text-muted">تابع أحدث المقالات حول التصحر، الذكاء الاصطناعي، والاستدامة البيئية.</p>
+    </header>
+
+    <!-- قائمة المقالات -->
+    <section class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <img src="~/image/desert.jpg" class="card-img-top" alt="تحليل التصحر">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">كيف يؤثر التصحر على البيئة؟</h5>
+                    <p class="card-text text-muted">استكشف تأثير التصحر على الحياة البيئية والطرق الحديثة لمكافحته.</p>
+                    <a href="#" class="btn btn-success">اقرأ المزيد</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <img src="~/image/ai-analysis.jpg" class="card-img-top" alt="الذكاء الاصطناعي">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">استخدام الذكاء الاصطناعي في تحليل الصور البيئية</h5>
+                    <p class="card-text text-muted">تعرف على دور الذكاء الاصطناعي في رصد التغيرات البيئية بدقة عالية.</p>
+                    <a href="#" class="btn btn-success">اقرأ المزيد</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <img src="~/image/sustainable.jpg" class="card-img-top" alt="الاستدامة البيئية">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">خطوات لتحقيق استدامة بيئية فعالة</h5>
+                    <p class="card-text text-muted">تعلم كيف يمكنك المساهمة في حماية البيئة وتحقيق التنمية المستدامة.</p>
+                    <a href="#" class="btn btn-success">اقرأ المزيد</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- تحسين التصميم والأداء -->
+<style>
+    .card img {
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .btn-success {
+        transition: transform 0.3s ease-in-out;
+    }
+
+        .btn-success:hover {
+            transform: scale(1.05);
+            background-color: #1E6F47;
+        }
+</style>
