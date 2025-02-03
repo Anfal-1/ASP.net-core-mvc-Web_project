@@ -7,7 +7,7 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY . .
-RUN dotnet publish -c Release -o /app/publish
+RUN mkdir -p /app/publish && dotnet publish -c Release -o /app/publish
 
 # ≈‰‘«¡ «·’Ê—… «·‰Â«∆Ì…
 FROM base AS final
