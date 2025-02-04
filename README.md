@@ -1,8 +1,6 @@
 
 # Web_EcoTrack
 
-بما أنك لم تعد ترغب باستخدام ASP.NET Core MVC لموقع EchoTrack وتفضل استخدام Next.js أو React، لكنك طلبت README لـ ASP.NET Core MVC، سأقوم بإعداد ملف README شامل لك وكأنه خاص بمشروع يستخدم ASP.NET Core MVC.
-
 EchoTrack - AI-powered Desertification Monitoring
 
 EchoTrack هو مشروع يهدف إلى مراقبة التصحر باستخدام الذكاء الاصطناعي وبيانات الأقمار الصناعية والطائرات بدون طيار (الدرونز). يعتمد المشروع على نماذج تعلم عميق متقدمة لتحليل الصور الجغرافية وتوليد تقارير مفصلة لدعم الاستدامة البيئية.
